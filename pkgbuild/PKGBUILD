@@ -1,0 +1,55 @@
+# Maintainer: Tales A. Mendonça <talesam@gmail.com>
+
+pkgname=comm-shell-orchis
+pkgdesc="Orchis Shell Theme Suite for BigCommunity"
+pkgver=$(date +%y.%m.%d)
+pkgrel=$(date +%H%M)
+depends=('gtk3' 'gtk4')
+arch=('any')
+license=('GPL3')
+url="https://github.com/vinceliuice/Orchis-theme"
+makedepends=('sassc' 'optipng')
+provides=("$pkgname")
+install=pkgbuild.install
+source=("git+${url}.git#branch=master")
+md5sums=('SKIP')
+
+prepare() {
+    cd "$srcdir/Orchis-theme"
+    # Install themes with shell and libadwaita support
+    HOME="$srcdir" ./install.sh -t all --shell --libadwaita --tweaks primary submenu dock
+
+    # Modify all cinnamon.css files in the installed themes
+    echo "Modifying cinnamon.css files..."
+    cd "$srcdir/.themes"
+    find . -name "cinnamon.css" -type f -exec sed -i '/\.sound-player-overlay {/,/}/ s/height: 80px;//g' {} +
+}
+
+package() {
+    # Destination directory
+    install -d "${pkgdir}/usr/share/themes"
+
+    # Copy Dark-Compact themes
+    for theme_dir in "$srcdir/.themes"/*-Dark-Compact; do
+        theme_name=$(basename "$theme_dir")
+        if [[ "$theme_name" == "Orchis-Dark-Compact" ]]; then
+            new_theme_name="Big-Blue"
+        else
+            new_theme_name="Big-${theme_name#Orchis-}"
+            new_theme_name="${new_theme_name%-Dark-Compact}"
+        fi
+        cp -r "$theme_dir" "${pkgdir}/usr/share/themes/$new_theme_name"
+    done
+
+    # Copy Light-Compact themes
+    for theme_dir in "$srcdir/.themes"/*-Light-Compact; do
+        theme_name=$(basename "$theme_dir")
+        if [[ "$theme_name" == "Orchis-Light-Compact" ]]; then
+            new_theme_name="Big-Blue-Light"
+        else
+            new_theme_name="Big-${theme_name#Orchis-}"
+            new_theme_name="${new_theme_name%-Light-Compact}-Light"
+        fi
+        cp -r "$theme_dir" "${pkgdir}/usr/share/themes/$new_theme_name"
+    done
+}

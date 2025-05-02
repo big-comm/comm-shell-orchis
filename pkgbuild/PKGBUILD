@@ -4,6 +4,7 @@ pkgname=comm-shell-orchis
 pkgdesc="Orchis Shell Theme Suite for BigCommunity"
 pkgver=$(date +%y.%m.%d)
 pkgrel=$(date +%H%M)
+epoch=1
 depends=('gtk3' 'gtk4')
 arch=('any')
 license=('GPL3')

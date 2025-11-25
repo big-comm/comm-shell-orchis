@@ -23,7 +23,7 @@ prepare() {
     # Modify all cinnamon.css files in the installed themes
     echo "Modifying cinnamon.css files..."
     cd "$srcdir/.themes"
-    find . -name "cinnamon.css" -type f -exec sed -i '/\.sound-player-overlay {/,/}/ s/height: 80px;//g' {} +
+    find . -name "cinnamon.css" -type f -exec sed -i '/\.sound-player-overlay {/,/}/ s/min-height: 80px;//g' {} +
 }
 
 package() {
